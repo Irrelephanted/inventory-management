@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How This App Works - Factory Inventory Management</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid #1e293b;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .header h1 { font-size: 2.25rem; font-weight: 700; color: #f8fafc; margin-bottom: 0.5rem; }
+    .header p { color: #94a3b8; font-size: 1.1rem; }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+    .section { margin-bottom: 3.5rem; }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.5rem;
+    }
+    .section-subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: #475569; }
+    .card .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .card h3 { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.9rem; color: #94a3b8; }
+    .card .analogy {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background: #0f172a;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: #cbd5e1;
+      border-left: 3px solid #3b82f6;
+    }
+
+    /* Flow Diagram */
+    .flow {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .flow-step:last-child { margin-bottom: 0; }
+    .flow-step::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 44px;
+      bottom: -24px;
+      width: 2px;
+      background: #334155;
+    }
+    .flow-step:last-child::before { display: none; }
+    .flow-num {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .flow-num.gold { background: #92400e; color: #fbbf24; }
+    .flow-num.green { background: #065f46; color: #34d399; }
+    .flow-num.blue { background: #1e3a5f; color: #60a5fa; }
+    .flow-num.purple { background: #3b0764; color: #a78bfa; }
+    .flow-num.pink { background: #831843; color: #f472b6; }
+    .flow-body h4 { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 0.25rem; }
+    .flow-body p { font-size: 0.875rem; color: #94a3b8; }
+    .flow-body .file-hint {
+      margin-top: 0.375rem;
+      font-size: 0.75rem;
+      color: #475569;
+      font-family: monospace;
+    }
+
+    /* Pages Grid */
+    .pages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .page-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .page-card:hover { border-color: #475569; }
+    .page-card .page-icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+    .page-card h4 { font-size: 0.95rem; font-weight: 700; color: #f1f5f9; margin-bottom: 0.25rem; }
+    .page-card p { font-size: 0.8rem; color: #64748b; }
+    .page-card .page-url {
+      margin-top: 0.5rem;
+      font-size: 0.7rem;
+      color: #475569;
+      font-family: monospace;
+    }
+
+    /* Shared Features */
+    .feature-row {
+      display: flex;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .feature-card {
+      flex: 1;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .feature-card h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.375rem;
+    }
+    .feature-card p { font-size: 0.85rem; color: #94a3b8; }
+
+    /* How to Run */
+    .run-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .run-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .run-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .run-card .cmd {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: #34d399;
+      margin-bottom: 0.5rem;
+    }
+    .run-card .note { font-size: 0.8rem; color: #64748b; }
+
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      color: #475569;
+      font-size: 0.8rem;
+      border-top: 1px solid #1e293b;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>How This App Works</h1>
+    <p>A plain-English guide to the Factory Inventory Management System</p>
+  </div>
+
+  <div class="container">
+
+    <!-- The Big Picture -->
+    <div class="section">
+      <h2 class="section-title">The Big Picture</h2>
+      <p class="section-subtitle">Think of this app like a restaurant. There's a front-of-house (what customers see) and a back-of-house (the kitchen).</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="icon">🖥️</div>
+          <h3>Frontend (The Dining Room)</h3>
+          <p>Built with <strong>Vue 3</strong> &mdash; this is everything you see and click on in the browser. It runs on port 3000.</p>
+          <div class="analogy">Like the dining room of a restaurant: it takes your order (clicks &amp; filters), sends it to the kitchen, and presents the food (data) on your plate (screen).</div>
+        </div>
+        <div class="card">
+          <div class="icon">⚙️</div>
+          <h3>Backend (The Kitchen)</h3>
+          <p>Built with <strong>Python FastAPI</strong> &mdash; this processes requests and serves up data. It runs on port 8001.</p>
+          <div class="analogy">Like the kitchen: it receives orders from the dining room, prepares the data (filters, calculates), and sends back exactly what was asked for.</div>
+        </div>
+        <div class="card">
+          <div class="icon">📁</div>
+          <h3>Data (The Pantry)</h3>
+          <p><strong>JSON files</strong> stored in <code style="background:#0f172a;padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">server/data/</code>. No database &mdash; everything loads into memory when the server starts.</p>
+          <div class="analogy">Like a pantry full of pre-made ingredients: inventory items, orders, spending records, forecasts. When the server restarts, it reloads fresh from these files (no changes are saved).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How Data Flows -->
+    <div class="section">
+      <h2 class="section-title">How Data Flows Through the App</h2>
+      <p class="section-subtitle">When you open a page or change a filter, here's what happens step by step &mdash; like placing an order at a restaurant.</p>
+      <div class="flow">
+        <div class="flow-step">
+          <div class="flow-num gold">1</div>
+          <div class="flow-body">
+            <h4>You interact with the page</h4>
+            <p>You open the app, click a page, or change a filter (like picking "Tokyo" warehouse). The filter bar at the top saves your choices.</p>
+            <div class="file-hint">FilterBar.vue &rarr; useFilters.js</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num blue">2</div>
+          <div class="flow-body">
+            <h4>The frontend asks the backend for data</h4>
+            <p>The page notices the filter changed and sends a request to the backend &mdash; like handing a ticket to the kitchen. The request includes your filter choices as parameters.</p>
+            <div class="file-hint">api.js sends HTTP request to localhost:8001</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num green">3</div>
+          <div class="flow-body">
+            <h4>The backend filters and prepares the data</h4>
+            <p>FastAPI receives the request, looks through the in-memory data, removes anything that doesn't match your filters, and packages up the results.</p>
+            <div class="file-hint">server/main.py &rarr; apply_filters() &rarr; filter_by_month()</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num purple">4</div>
+          <div class="flow-body">
+            <h4>The data gets validated</h4>
+            <p>Before sending the data back, FastAPI checks that everything looks right (correct fields, correct types) &mdash; like a quality check before the dish leaves the kitchen.</p>
+            <div class="file-hint">Pydantic models in server/main.py</div>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-num pink">5</div>
+          <div class="flow-body">
+            <h4>The page updates with fresh data</h4>
+            <p>The frontend receives the response and automatically re-renders the charts, tables, and numbers you see on screen. No page reload needed &mdash; it updates in place.</p>
+            <div class="file-hint">Vue computed properties &rarr; template re-render</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pages -->
+    <div class="section">
+      <h2 class="section-title">The 6 Pages</h2>
+      <p class="section-subtitle">Each page is like a different department in a factory office, showing different information.</p>
+      <div class="pages-grid">
+        <div class="page-card">
+          <div class="page-icon">📊</div>
+          <h4>Dashboard</h4>
+          <p>The "command center" &mdash; KPIs, charts, and a bird's-eye view of everything</p>
+          <div class="page-url">/</div>
+        </div>
+        <div class="page-card">
+          <div class="page-icon">📦</div>
+          <h4>Inventory</h4>
+          <p>What's in stock across all warehouses, with search and stock alerts</p>
+          <div class="page-url">/inventory</div>
+        </div>
+        <div class="page-card">
+          <div class="page-icon">🛒</div>
+          <h4>Orders</h4>
+          <p>All customer orders and their status (delivered, shipped, processing, etc.)</p>
+          <div class="page-url">/orders</div>
+        </div>
+        <div class="page-card">
+          <div class="page-icon">💰</div>
+          <h4>Spending</h4>
+          <p>Where the money goes &mdash; monthly trends, categories, and recent transactions</p>
+          <div class="page-url">/spending</div>
+        </div>
+        <div class="page-card">
+          <div class="page-icon">📈</div>
+          <h4>Demand Forecast</h4>
+          <p>Predictions for what products will be needed, with trend arrows</p>
+          <div class="page-url">/demand</div>
+        </div>
+        <div class="page-card">
+          <div class="page-icon">📋</div>
+          <h4>Reports</h4>
+          <p>Quarterly and monthly performance summaries</p>
+          <div class="page-url">/reports</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shared Features -->
+    <div class="section">
+      <h2 class="section-title">Features That Work Across All Pages</h2>
+      <p class="section-subtitle">These are like building-wide systems &mdash; they work the same way no matter which page you're on.</p>
+      <div class="feature-row">
+        <div class="feature-card">
+          <h4>🔍 Global Filters</h4>
+          <p>The filter bar at the top lets you narrow down by <strong>time period</strong>, <strong>warehouse</strong> (San Francisco, London, Tokyo), <strong>product category</strong>, and <strong>order status</strong>. When you change a filter, every page updates to match.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🌐 Language Switching</h4>
+          <p>Toggle between <strong>English</strong> and <strong>Japanese</strong>. When you switch to Japanese, everything translates &mdash; labels, product names, even the currency changes from USD to JPY.</p>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-card">
+          <h4>👤 User Profile</h4>
+          <p>The avatar in the top-right opens a profile menu with user details and a task list. This is mock data &mdash; there's no real login system, it's just for demo purposes.</p>
+        </div>
+        <div class="feature-card">
+          <h4>🔗 Click-to-Detail</h4>
+          <p>Many items in tables are clickable. Click a product, inventory item, or backlog entry to open a popup with more details. Like clicking a folder to see what's inside.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- How to Run -->
+    <div class="section">
+      <h2 class="section-title">How to Run It</h2>
+      <p class="section-subtitle">Two servers need to be running at the same time &mdash; one for the frontend, one for the backend.</p>
+      <div class="run-grid">
+        <div class="run-card">
+          <h4>🚀 Quick Start (one command)</h4>
+          <div class="cmd">./scripts/start.sh</div>
+          <div class="note">Starts both servers at once. Use <code style="color:#94a3b8;">./scripts/stop.sh</code> to shut them down.</div>
+        </div>
+        <div class="run-card">
+          <h4>🔧 Manual Start</h4>
+          <div class="cmd">cd server && uv run python main.py</div>
+          <div class="cmd">cd client && npm run dev</div>
+          <div class="note">Run each in a separate terminal window.</div>
+        </div>
+        <div class="run-card">
+          <h4>🧪 Run Tests</h4>
+          <div class="cmd">cd tests && uv run pytest -v</div>
+          <div class="note">51 tests that verify all the backend endpoints work correctly. No servers need to be running.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Things to Know -->
+    <div class="section">
+      <h2 class="section-title">Key Things to Know</h2>
+      <p class="section-subtitle">If you remember nothing else, remember these.</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="icon">💾</div>
+          <h3>Nothing Saves Permanently</h3>
+          <p>This is a demo app. All data lives in JSON files and loads fresh every time the backend restarts. Any changes you make (tasks, purchase orders) disappear on restart.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🔌</div>
+          <h3>Two Servers, One App</h3>
+          <p>The frontend (port 3000) and backend (port 8001) are separate programs that talk to each other. Both need to be running for the app to work.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🎛️</div>
+          <h3>Filters Are Global</h3>
+          <p>When you set a filter on one page, it stays active when you switch pages. Think of it like adjusting the thermostat &mdash; it affects the whole building, not just one room.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Factory Inventory Management System &mdash; Architecture Overview &mdash; Generated Feb 2026
+  </div>
+
+</body>
+</html>
